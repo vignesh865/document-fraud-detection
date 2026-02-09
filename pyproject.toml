@@ -1,0 +1,17 @@
+[project]
+name = "document-fraud-detection"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.12"
+dependencies = [
+    "exifread>=3.5.1",
+    "matplotlib>=3.10.8",
+    "mrz>=0.6.2",
+    "numpy>=2.4.2",
+    "opencv-python>=4.13.0.92",
+    "pillow>=12.1.0",
+    "pypdf>=6.6.2",
+    "pywavelets>=1.9.0",
+    "scikit-image>=0.26.0",
+    "typer>=0.21.1",
+]
