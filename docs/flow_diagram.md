@@ -1,3 +1,4 @@
+```mermaid
 graph TD
     %% --- Initial Setup ---
     Start(Start: Digital Document Intake) --> Input[Input Document File]
@@ -126,3 +127,4 @@ graph TD
     class Triage,MetaCheck,Routing,MRZCheck,ValidMRZ,MainBranch,PDFAnalysis,ImageBranch,UniversalVisual,AdvAI,RiskScore decision;
     class FlagMeta,FlagTime,FlagHW,FlagMRZ,FlagInc,FlagGhost,FlagPaste,FlagELA,FlagDoubleSave,FlagNoise,FlagBPCS,FlagClone,FlagSkew,FlagOCR,FlagRecap,FlagGAN,HighRisk flag;
     class Stage1,Stage2,Stage3,Stage4a,Stage4b,Stage5,Stage6 subgraphStyle;
+```
