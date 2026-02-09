@@ -1,23 +1,22 @@
 """
-Test Region-Aware Fraud Detection on Ground Truth
+Test Gemini AI Direct Fraud Detection
 
-Ground truth from user:
-- REAL: Passport - Front page.jpg, passport fee receipt.jpeg
-- FAKE: vigneshPassportDevakottai2.png, ArjunvigneshPassport.png
+Tests all 4 documents with Gemini's direct fraud analysis.
 """
 
 import os
-
 from dotenv import load_dotenv
+from src.analyzers.gemini_fraud_detector import analyze_with_gemini, visualize_analysis
 
-from src.analyzers.region_aware import analyze_document
+# Load environment variables
 load_dotenv()
+
 def main():
     print("="*80)
-    print(" REGION-AWARE FRAUD DETECTION TEST")
+    print(" GEMINI AI DIRECT FRAUD DETECTION TEST")
     print("="*80)
     
-    output_dir = "verification_output_region_aware"
+    output_dir = "verification_output_gemini_ai"
     os.makedirs(output_dir, exist_ok=True)
     
     # Test documents with ground truth
@@ -41,11 +40,6 @@ def main():
             'path': '/Users/vignesh/Downloads/passport fee receipt.jpeg',
             'name': "passport fee receipt.jpeg",
             'ground_truth': "REAL"
-        },
-        {
-            'path': '/Users/vignesh/Downloads/2passport fee receipt.png',
-            'name': "2passport fee receipt.png",
-            'ground_truth': "REAL"
         }
     ]
     
@@ -53,7 +47,7 @@ def main():
     
     for idx, doc in enumerate(documents, 1):
         print(f"\n{'='*80}")
-        print(f"[{idx}/5] {doc['name']}")
+        print(f"[{idx}/4] {doc['name']}")
         print(f"Ground Truth: {doc['ground_truth']}")
         print("="*80)
         
@@ -64,42 +58,37 @@ def main():
         # Create output path
         doc_dir = os.path.join(output_dir, f"doc{idx}_{os.path.splitext(doc['name'])[0]}")
         os.makedirs(doc_dir, exist_ok=True)
-        output_path = os.path.join(doc_dir, "region_aware_analysis.png")
+        output_path = os.path.join(doc_dir, "gemini_ai_analysis.png")
         
-        # Run region-aware analysis
-        result = analyze_document(doc['path'], output_path=output_path)
+        # Run Gemini AI analysis
+        result = analyze_with_gemini(doc['path'])
         
         if 'error' in result:
             print(f"❌ ERROR: {result['error']}")
+            if 'raw_response' in result:
+                print(f"Raw response: {result['raw_response'][:200]}...")
             continue
         
         # Display results
-        print(f"\n📊 SEGMENTATION:")
-        print(f"   Total regions: {result['segmentation']['num_regions']}")
-        print(f"   Text regions: {result['segmentation']['num_text_regions']}")
-        print(f"   Photo regions: {result['segmentation']['num_photo_regions']}")
+        print(f"\n🤖 GEMINI AI ANALYSIS:")
+        print(f"   Verdict: {'🚨 FORGED' if result['is_forged'] else '✅ AUTHENTIC'}")
+        print(f"   Confidence: {result['confidence']*100:.0f}%")
         
-        print(f"\n📝 TEXT ANALYSIS (text-to-text only):")
-        text_res = result['text_analysis']
-        if 'stroke_cv' in text_res:
-            print(f"   Stroke CV: {text_res['stroke_cv']:.3f}")
-            print(f"   Char CV: {text_res['char_cv']:.3f}")
-            print(f"   Sharpness CV: {text_res['sharpness_cv']:.3f}")
-            print(f"   Verdict: {'🚨 SUSPICIOUS' if text_res['is_suspicious'] else '✅ CONSISTENT'}")
-        else:
-            print(f"   {text_res.get('reason', 'N/A')}")
+        if result.get('red_flags'):
+            print(f"\n   🚨 RED FLAGS:")
+            for flag in result['red_flags']:
+                print(f"      • {flag}")
         
-        print(f"\n🔲 BOUNDARY ANALYSIS:")
-        bound_res = result['boundary_analysis']
-        if 'sharp_ratio' in bound_res:
-            print(f"   Sharp Ratio: {bound_res['sharp_ratio']:.2%}")
-            print(f"   Max Gradient: {bound_res['max_gradient']:.1f}")
-            print(f"   Verdict: {'🚨 SHARP BOUNDARIES' if bound_res['is_suspicious'] else '✅ NATURAL'}")
-        else:
-            print(f"   {bound_res.get('reason', 'N/A')}")
+        if result.get('green_flags'):
+            print(f"\n   ✅ GREEN FLAGS:")
+            for flag in result['green_flags']:
+                print(f"      • {flag}")
+        
+        if result.get('explanation'):
+            print(f"\n   📝 {result['explanation']}")
         
         # Overall verdict
-        prediction = "FAKE" if result['is_suspicious'] else "REAL"
+        prediction = "FAKE" if result['is_forged'] else "REAL"
         correct = (prediction == doc['ground_truth'])
         
         print(f"\n╔{'═'*76}╗")
@@ -107,6 +96,9 @@ def main():
         print(f"║ Ground Truth: {doc['ground_truth']:^60} ║")
         print(f"║ Result: {'✅ CORRECT' if correct else '❌ INCORRECT':^66} ║")
         print(f"╚{'═'*76}╝")
+        
+        # Visualize
+        visualize_analysis(doc['path'], result, output_path)
         
         results_summary.append({
             'name': doc['name'],

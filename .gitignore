@@ -212,3 +212,9 @@ __marimo__/
 /verification_output_comprehensive/
 /verification_output_document/
 /verification_output_region_aware/
+/src/analyzers/.fraud_analysis_cache/
+/verification_output_gemini_ai/
+/verification_output_png_test/
+/verification_output_region_aware/
+/verification_output_region_diffusion/
+/verification_output_region_gan/

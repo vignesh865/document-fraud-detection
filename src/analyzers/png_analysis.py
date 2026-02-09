@@ -64,6 +64,10 @@ def analyze_png(image_path: str, output_path: str = None) -> Dict:
             'interpretation': f"{suspicious_signals}/3 PNG-specific tests flagged"
         }
         
+        # Add to top-level for easy access
+        results['is_suspicious'] = is_suspicious
+        results['suspicious_signals'] = suspicious_signals
+        
         # Visualization
         if output_path:
             _visualize_png_analysis(image_path, results, output_path)
