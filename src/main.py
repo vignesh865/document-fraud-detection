@@ -1,7 +1,7 @@
 
 import typer
 import os
-from src.analyzers import ela, noise, copy_move, metadata, bpcs, mrz_checker, pdf_analysis, frequency, prnu
+from src.analyzers import ela, noise, copy_move, metadata, bpcs, mrz_checker, pdf_analysis, frequency, prnu, font_analysis, resolution_analysis
 
 app = typer.Typer()
 
@@ -64,6 +64,24 @@ def analyze(image_path: str, output_dir: str = "output", mrz: str = None):
         prnu_var = prnu_res.get('noise_variance', 0)
         prnu_suspicious = prnu_res.get('is_suspicious', False)
         print(f"PRNU Variance: {prnu_var:.6e} [{'SUSPICIOUS' if prnu_suspicious else 'OK'}]")
+
+        # 8. Font Consistency Analysis (Document-specific)
+        print("Running Font Consistency Analysis...")
+        font_output = os.path.join(output_dir, f"{name}_font.png")
+        font_res = font_analysis.analyze_font_consistency(image_path, output_path=font_output)
+        if 'error' not in font_res:
+            font_suspicious = font_res.get('is_suspicious', False)
+            font_score = font_res.get('consistency_score', 0)
+            print(f"Font Consistency Score: {font_score:.4f} [{'SUSPICIOUS' if font_suspicious else 'OK'}]")
+
+        # 9. Resolution Inconsistency Detection (Document-specific)
+        print("Running Resolution Inconsistency Detection...")
+        res_output = os.path.join(output_dir, f"{name}_resolution.png")
+        res_res = resolution_analysis.analyze_resolution_inconsistency(image_path, output_path=res_output)
+        if 'error' not in res_res:
+            res_suspicious = res_res.get('is_suspicious', False)
+            res_cv = res_res.get('cv_sharpness', 0)
+            print(f"Resolution CV: {res_cv:.4f} [{'SUSPICIOUS' if res_suspicious else 'OK'}]")
 
     elif is_pdf:
         print("PDF detected. Running Structure Analysis...")

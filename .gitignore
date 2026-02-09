@@ -208,3 +208,7 @@ __marimo__/
 /output/
 /verification_output/
 /verification_output_ai/
+/src/analyzers/region_aware/.segmentation_cache/
+/verification_output_comprehensive/
+/verification_output_document/
+/verification_output_region_aware/
