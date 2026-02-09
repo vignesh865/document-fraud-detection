@@ -207,3 +207,4 @@ marimo/_lsp/
 __marimo__/
 /output/
 /verification_output/
+/verification_output_ai/

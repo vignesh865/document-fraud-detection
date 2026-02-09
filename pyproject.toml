@@ -13,5 +13,7 @@ dependencies = [
     "pypdf>=6.6.2",
     "pywavelets>=1.9.0",
     "scikit-image>=0.26.0",
+    "scipy>=1.17.0",
+    "tqdm>=4.67.3",
     "typer>=0.21.1",
 ]

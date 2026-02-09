@@ -3,7 +3,9 @@ import cv2
 import numpy as np
 import os
 from src.analyzers import ela, noise, copy_move, metadata, bpcs, frequency, prnu
+from src.analyzers.diffusion_detector import DiffusionModelDetector
 from src.analyzers.frequence_v2 import FrequencyDeepfakeDetector
+from src.analyzers.unified_fast_detector import UnifiedDeepfakeDetector
 
 
 def create_synthetic_data(filename="test_ai_fake.jpg"):
@@ -33,23 +35,31 @@ def verify():
 
     # image_path = create_synthetic_data()
     # image_path = "/Users/vignesh/Downloads/vigneshPassportDevakottai2.png"
-    # image_path = '/Users/vignesh/Documents/Canada Documents/Passport - Front page.jpg'
+    image_path = '/Users/vignesh/Documents/Canada Documents/Passport - Front page.jpg'
     # image_path = '/Users/vignesh/Downloads/ArjunvigneshPassport.png'
-    image_path = '/Users/vignesh/Downloads/passport fee receipt.jpeg'
+    # image_path = '/Users/vignesh/Downloads/passport fee receipt.jpeg'
     print(f"Created synthetic AI fake: {image_path}")
 
     print("--- Testing Frequency Analysis ---")
     freq_out = os.path.join(output_dir, "freq_result.png")
     # res = frequency.analyze_frequency(image_path, output_path=freq_out)
 
-    detector = FrequencyDeepfakeDetector()
-    res = detector.analyze_image(image_path, output_dir)
+    # detector = FrequencyDeepfakeDetector()
+    # res = detector.analyze_image(image_path, output_dir)
+    #
+    # print(f"GAN detection methods : {res}")
+    #
+    # detector = DiffusionModelDetector()
+    # res = detector.analyze_image(image_path, output_dir)
+    # print(f"Diffusion detection methods : {res}")
 
-    print(f"Energy Ratio: {res}")
-    if os.path.exists(freq_out): 
-        print("Frequency Analysis: PASSED")
-    else:
-        print("Frequency Analysis: FAILED")
+    detector = UnifiedDeepfakeDetector(
+        max_dimension=2048,  # Aggressive downsampling
+        verbose=True  # No progress bars
+    )
+
+    res = detector.analyze_image(image_path, output_dir)
+    print(f"Combined detection methods : {res}")
 
     print("--- Testing PRNU ---")
     prnu_out = os.path.join(output_dir, "prnu_result.png")
