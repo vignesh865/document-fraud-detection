@@ -44,13 +44,7 @@ Send the entire document image to Gemini with a detailed forensic prompt request
 - Image manipulation artifacts
 - Unusual patterns or degradation
 
-## Key Advantages
 
-- **Semantic Understanding**: Understands document context and meaning
-- **No Training Required**: Pre-trained on vast document corpus
-- **Explainable**: Provides detailed reasoning for decisions
-- **Definitive Proofs**: Can catch mathematical errors (MRZ checksums)
-- **Holistic Analysis**: Considers multiple factors simultaneously
 
 ## Limitations
 
@@ -61,17 +55,7 @@ Send the entire document image to Gemini with a detailed forensic prompt request
 
 ## Use Cases
 
-### Ideal For
-- Quick initial screening
-- Identifying logical/mathematical fraud
-- Cases requiring explanation
-- Documents with semantic relationships (MRZ, dates, etc.)
 
-### Less Effective For
-- Subtle visual manipulations
-- Documents without semantic validation points
-- High-volume batch processing (cost)
-- Offline scenarios
 
 ## Implementation Components
 
@@ -90,11 +74,7 @@ Extract structured data from Gemini's response:
 - `green_flags`: List of authenticity indicators
 - `explanation`: Detailed reasoning
 
-### Caching Strategy
-Implement file-hash based caching:
-- Avoid re-analyzing same document
-- Reduce API costs
-- Speed up repeated requests
+
 
 ## Decision Logic
 

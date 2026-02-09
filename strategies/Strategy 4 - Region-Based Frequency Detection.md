@@ -76,13 +76,7 @@ if suspicion_ratio > threshold:  # e.g., >30% regions flagged
     verdict = LIKELY_FAKE
 ```
 
-## Key Advantages
 
-- **Granular Detection**: Identifies which specific regions are AI/manipulated
-- **Complementary Signals**: GAN and Diffusion catch different artifacts
-- **Region Context**: Knows what type of content is being analyzed
-- **Interpretable**: Can show user exactly what's suspicious
-- **No Training Required**: Pre-built frequency analyzers
 
 ## Limitations
 
@@ -143,17 +137,7 @@ if len(suspicious_regions) / len(regions) > 0.5:
 
 ## Use Cases
 
-### Ideal For
-- Documents with AI-generated photos
-- Detecting GAN-created faces in passports
-- Mixed real/AI content detection
-- Cases where specific region is suspect
 
-### Less Effective For
-- Fully scanned physical documents
-- Documents with heavy compression
-- Small/low-quality images
-- Simple text-only documents
 
 ## Integration Points
 
@@ -181,7 +165,4 @@ Challenge: Set suspicion_ratio threshold
 - Aggressive (10-20%): Higher sensitivity
 - Adaptive: Based on region types present
 
-### Caching
-- Cache frequency analysis per region
-- Use region content hash for cache key
-- Significant speedup on re-analysis
+

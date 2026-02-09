@@ -180,13 +180,7 @@ else:
     confidence = 1 - suspicion_ratio
 ```
 
-## Key Advantages
 
-- **Unsupervised**: No training data needed (pre-trained models)
-- **Direct Splice Detection**: Specifically targets composite forgeries
-- **Robust to Content**: Works regardless of what content is
-- **Interpretable**: Shows exactly which regions are inconsistent
-- **No Semantic Understanding Required**: Pure visual consistency
 
 ## Limitations
 
@@ -216,33 +210,9 @@ else:
 
 ## Use Cases
 
-### Ideal For
-- Detecting composite/template-based forgeries
-- Documents with pasted photos
-- Cases where source consistency matters
-- Splice boundary identification
 
-### Less Effective For
-- Fully AI-generated documents (internally consistent)
-- Simple text edits (embeddings may not capture)
-- Very small/low-quality documents
-- Documents with intentional style variations
 
-## Optimization Strategies
 
-### Region Filtering
-- Skip very small regions (< 64x64 pixels)
-- Prioritize high-importance regions (PHOTO, SEAL)
-- Merge similar adjacent regions
-
-### Embedding Caching
-- Cache embeddings per region content hash
-- Reuse across multiple analyses
-- Significantly speeds up re-analysis
-
-### Batch Processing
-- Extract embeddings in batches for GPU efficiency
-- Process multiple regions simultaneously
 
 ## Integration Points
 

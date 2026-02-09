@@ -18,20 +18,20 @@
 
 ## Experimental Strategy Overview
 
-We've developed **6 distinct strategies** for document fraud detection, each with different strengths, limitations, and use cases:
+We are exploring **6 distinct strategies** for document fraud detection, each with different methodological approaches:
 
-| Strategy | Primary Method | Dependencies | Best For |
-|----------|---------------|--------------|----------|
-| [Strategy 1](#strategy-1) | Gemini AI Direct | Gemini API | Semantic/logical validation |
-| [Strategy 2](#strategy-2) | Traditional CV | None (offline) | Privacy-critical, offline |
-| [Strategy 3](#strategy-3) | Region + CV | Gemini API | Targeted analysis |
-| [Strategy 4](#strategy-4) | Region + Frequency | Gemini API | AI-generated content |
-| [Strategy 5](#strategy-5) | Embedding Consistency | DINOv2/CLIP | Splice detection |
-| [Strategy 6](#strategy-6) | Hybrid Multi-Tier | Multiple | Production systems |
+| Strategy | Primary Method | Dependencies |
+|----------|---------------|--------------|
+| [Strategy 1](strategies/Strategy%201%20-%20Gemini%20AI%20Direct%20Analysis.md) | Gemini AI Direct | Gemini API |
+| [Strategy 2](strategies/Strategy%202%20-%20Traditional%20Computer%20Vision.md) | Traditional CV | None (offline) |
+| [Strategy 3](strategies/Strategy%203%20-%20Region-Aware%20Analysis%20with%20Gemini%20Segmentation.md) | Region + CV | Gemini API |
+| [Strategy 4](strategies/Strategy%204%20-%20Region-Based%20Frequency%20Detection.md) | Region + Frequency | Gemini API |
+| [Strategy 5](strategies/Strategy%205%20-%20Embedding-Based%20Region%20Consistency.md) | Embedding Consistency | DINOv2/CLIP |
+| [Strategy 6](strategies/Strategy%206%20-%20Hybrid%20Multi-Tier%20System.md) | Hybrid Multi-Tier | Multiple |
 
 ---
 
-## Strategy Documents
+## Strategy Summaries
 
 ### Strategy 1: Gemini AI Direct Analysis
 **[Read Full Strategy →](strategies/Strategy%201%20-%20Gemini%20AI%20Direct%20Analysis.md)**
@@ -40,12 +40,7 @@ Uses Gemini Vision API for end-to-end document forensic analysis.
 
 **Approach**: Single AI call for semantic understanding, mathematical validation (MRZ checksums, date logic), and visual inspection.
 
-**Key Strengths**:
-- Explainable AI reasoning
-- Catches definitive proofs (checksum errors, impossible dates)
-- No training data required
 
-**Best For**: Quick screening, documents with semantic validation points
 
 ---
 
@@ -56,12 +51,7 @@ Classical image processing techniques without AI/ML dependencies.
 
 **Approach**: Apply multiple independent CV analyzers (ELA, noise analysis, font checking, frequency analysis) and aggregate results.
 
-**Key Strengths**:
-- Completely offline
-- No API costs
-- Deterministic results
 
-**Best For**: Privacy-critical scenarios, high-volume batch processing, air-gapped environments
 
 ---
 
@@ -72,12 +62,7 @@ Gemini segments document into semantic regions, then applies targeted CV analysi
 
 **Approach**: Two-stage pipeline - Gemini identifies and classifies regions (TEXT, PHOTO, SEAL, etc.), then region-specific analyzers examine each.
 
-**Key Strengths**:
-- Reduced false positives (right tool for each region)
-- Better interpretability (know which regions problematic)
-- Flexible analyzer selection
 
-**Best For**: Complex documents, mixed content types, cases needing fine-grained analysis
 
 ---
 
@@ -88,28 +73,18 @@ Applies GAN and Diffusion frequency-domain detectors to individual regions.
 
 **Approach**: Gemini segments → Run GAN/Diffusion on each region → Aggregate suspicious signals. Includes type-aware filtering (only analyze appropriate regions).
 
-**Key Strengths**:
-- Detects AI-generated content
-- Granular detection (per-region verdicts)
-- Complementary signals (GAN + Diffusion)
 
-**Best For**: Documents with AI-generated photos, detecting GAN-created faces, mixed real/AI content
 
 ---
 
 ### Strategy 5: Embedding-Based Region Consistency
-**[Read Full Strategy →](strategies/Strategy%205%20-%20Embedding%20Based%20Region%20Consistency.md)**
+**[Read Full Strategy →](strategies/Strategy%205%20-%20Embedding-Based%20Region%20Consistency.md)**
 
 Uses visual embeddings (DINOv2, CLIP) to detect inconsistencies between regions.
 
 **Approach**: Extract embeddings for each region → Compare consistency scores → Flag regions with anomalous embeddings indicating splice boundaries.
 
-**Key Strengths**:
-- Unsupervised (no training data)
-- Direct splice detection
-- Detects composite forgeries
 
-**Best For**: Template-based forgeries, pasted photos, documents with content from multiple sources
 
 ---
 
@@ -123,12 +98,7 @@ Combines all methods in a tiered architecture prioritizing high-confidence techn
 - **Tier 2** (Strong): Embeddings + splice detection (human review)
 - **Tier 3** (Weak): Frequency + metadata (additional context)
 
-**Key Strengths**:
-- Optimal resource usage
-- Graceful degradation
-- Explainable decisions
 
-**Best For**: Production fraud detection systems, cases requiring accuracy/throughput balance
 
 ---
 
@@ -139,36 +109,11 @@ Combines all methods in a tiered architecture prioritizing high-confidence techn
 
 Complete reference for all Gemini Vision API prompts used across strategies.
 
-**Contents**:
-- Forensic Analysis Prompt (full text + schema)
-- Semantic Segmentation Prompt (full text + schema)
-- Usage examples and response parsing
-- Caching strategies and cost optimization
-
----
-
-## Quick Selection Guide
-
-**Need definitive proofs with zero false positives?**  
-→ Use [Strategy 1](#strategy-1) or [Strategy 6 Tier 1](#strategy-6)
-
-**Need to work offline without API access?**  
-→ Use [Strategy 2](#strategy-2)
-
-**Have composite forgeries (pasted photos/text)?**  
-→ Use [Strategy 5](#strategy-5) or [Strategy 3](#strategy-3)
-
-**Suspect AI-generated content?**  
-→ Use [Strategy 4](#strategy-4) with type filtering
-
-**Building production system?**  
-→ Use [Strategy 6](#strategy-6) for comprehensive coverage
-
 ---
 
 ## Implementation Status
 
-All strategies are documented and ready for implementation. Current codebase includes:
+All strategies are documented and in exploratory phase. Current codebase includes:
 
 - ✅ Gemini direct fraud detection (`src/analyzers/gemini_fraud_detector.py`)
 - ✅ Gemini semantic segmentation (`src/analyzers/region_aware/gemini_segmenter.py`)
@@ -179,23 +124,3 @@ All strategies are documented and ready for implementation. Current codebase inc
 - ✅ Region-based Diffusion detection (`src/analyzers/region_diffusion_detector.py`)
 - ⏳ Embedding consistency detector (Strategy 5 - pending)
 - ⏳ Multi-tier hybrid system (Strategy 6 - pending)
-
----
-
-## Next Steps
-
-1. **Choose strategy** based on use case and requirements
-2. **Review strategy document** for implementation details
-3. **Check Gemini Prompts Reference** if using Gemini-based strategies
-4. **Implement and test** on sample documents
-5. **Tune thresholds** based on validation results
-
----
-
-## Contributing
-
-When adding new strategies:
-1. Create new `Strategy X - [Name].md` file
-2. Follow existing format (Overview, Approach, Advantages, Limitations, etc.)
-3. Update this README with new strategy entry
-4. Add to Quick Selection Guide if applicable

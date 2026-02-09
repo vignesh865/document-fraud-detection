@@ -233,12 +233,6 @@ if is_uncertain(tier2_results):
         # ...
 ```
 
-### Caching Strategy
-- Cache Gemini segmentation (used by multiple tiers)
-- Cache embeddings (reused in Tier 2 and 3)
-- Cache region extractions
-- Use document hash as cache key
-
 ### Early Termination
 ```python
 if tier1.is_definitive:
@@ -260,14 +254,7 @@ if tier2.confidence > 90:
 | PASS | MED | SUPPORTIVE | LIKELY_FAKE | Human Review |
 | PASS | MED | CONTRADICTORY | UNCERTAIN | Human Review |
 
-## Key Advantages
 
-- **Optimal Resource Usage**: Expensive methods only when needed
-- **Fast Common Cases**: Most clear cases resolved at Tier 1
-- **Graceful Degradation**: Works even if some tiers fail
-- **Explainable**: Clear evidence trail for decisions
-- **Tunable**: Adjust thresholds per use case
-- **Scalable**: Parallelize within tiers
 
 ## Limitations
 
@@ -277,13 +264,6 @@ if tier2.confidence > 90:
 - **Latency Variability**: Time varies by tier reached
 
 ## Use Cases
-
-### Ideal For
-- Production fraud detection systems
-- Cases requiring balance of accuracy and throughput
-- Scenarios with mix of obvious and subtle fakes
-- Systems needing explainable decisions
-- Cost-sensitive high-volume applications
 
 ### Configuration Per Use Case
 

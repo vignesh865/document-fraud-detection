@@ -93,13 +93,7 @@ else:
     verdict = LIKELY_REAL
 ```
 
-## Key Advantages
 
-- **Offline Operation**: No API or internet required
-- **No Training Data**: Uses mathematical/statistical properties
-- **Fast**: Pure computation, no model inference
-- **Deterministic**: Same input always gives same output
-- **Transparent**: Clear mathematical basis for each method
 
 ## Limitations
 
@@ -111,18 +105,7 @@ else:
 
 ## Use Cases
 
-### Ideal For
-- Offline/air-gapped environments
-- High-volume batch processing
-- Cost-sensitive applications
-- Privacy-critical scenarios (no data leaves system)
-- Baseline quick screening
 
-### Less Effective For
-- Documents with heavy compression
-- Scanned physical documents (natural artifacts)
-- Subtle professional forgeries
-- Semantic/logical validation
 
 ## Threshold Tuning
 

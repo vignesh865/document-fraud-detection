@@ -109,13 +109,7 @@ if suspicion_ratio > threshold or boundary_issues > threshold:
     verdict = LIKELY_FAKE
 ```
 
-## Key Advantages
 
-- **Targeted Analysis**: Right tool for each region type
-- **Reduced False Positives**: Don't run photo analysis on text/logos
-- **Better Interpretability**: Know which specific regions are problematic
-- **Granular Results**: Enables targeted human review
-- **Flexible**: Easy to add new region-specific analyzers
 
 ## Limitations
 
@@ -126,29 +120,9 @@ if suspicion_ratio > threshold or boundary_issues > threshold:
 
 ## Use Cases
 
-### Ideal For
-- Complex document layouts
-- Documents with mixed content types
-- Cases needing fine-grained analysis
-- Scenarios where interpretability matters
-- Documents with many distinct elements
 
-### Less Effective For
-- Simple single-image documents
-- High-speed real-time processing
-- Very small/low-quality documents
-- Cost-sensitive high-volume scenarios
 
-## Caching Strategy
 
-**Segmentation Caching**:
-- Cache Gemini segmentation results by image hash
-- Reuse segmentation for repeated analysis
-- Significantly reduces API costs
-
-**Analysis Caching**:
-- Cache per-region analysis results
-- Enable incremental re-analysis (only changed regions)
 
 ## Fallback Mechanisms
 
