@@ -1,158 +1,17 @@
 # Strategy 3: Region-Aware Analysis with Gemini Segmentation
 
-## Overview
-
-Use Gemini Vision API to intelligently segment documents into semantic regions (TEXT, PHOTO, SEAL, etc.), then apply targeted computer vision analysis to each region type.
-
 ## Approach
 
-**Two-Stage Pipeline**:
-1. **Segmentation**: Gemini identifies and classifies document regions
-2. **Analysis**: Apply region-type-specific CV analyzers
+This strategy moves beyond whole-document detection by first breaking the document down into its semantic building blocks. We use the Gemini Vision Model to intelligently segment the document into distinct regions, classifying each as "Photo", "Text", "Seal", "MRZ", or other relevant types.
 
-## Stage 1: Gemini Semantic Segmentation
+Once the document is mapped, we apply targeted computer vision analysis appropriate for each specific region type:
 
-### Segmentation Request
-Send document to Gemini requesting:
-- Identify distinct regions
-- Classify each region (TEXT, PHOTO, SEAL, LOGO, MRZ, BACKGROUND, etc.)
-- Provide bounding boxes
-- Describe each region's content
+1.  **Photo Regions**: Analyzed for lighting consistency, face manipulation artifacts, and background irregularities that might suggest a photo swap.
 
-### Expected Output
-```json
-{
-  "regions": [
-    {
-      "id": 1,
-      "type": "PHOTO",
-      "bbox": [x, y, width, height],
-      "description": "Portrait of passport holder"
-    },
-    {
-      "id": 2,
-      "type": "MRZ",
-      "bbox": [x, y, width, height],
-      "description": "Machine readable zone with document number"
-    },
-    // ... 30-44 regions typically
-  ]
-}
-```
+2.  **Text Fields**: Examined for font consistency, character alignment, and rendering quality to detect if names or dates have been altered.
 
-### Advantages Over Traditional Segmentation
-- **Semantic Understanding**: Knows what regions mean, not just visual boundaries
-- **Robust Classification**: Better than OpenCV at identifying region types
-- **Detailed Descriptions**: Provides context for each region
-- **Handles Complex Layouts**: Works with varied document structures
+3.  **MRZ (Machine Readable Zone)**: Validated for checksum correctness and proper formatting.
 
-## Stage 2: Region-Specific Analysis
+4.  **Seals and Watermarks**: Checked for edge sharpness, color consistency, and expected placement.
 
-### Analyzer Selection by Region Type
-
-**PHOTO Regions**:
-- Face detection and analysis
-- Lighting consistency
-- Background examination
-- Photo quality metrics
-
-**TEXT Regions**:
-- OCR extraction
-- Font consistency analysis
-- Character rendering examination
-- Alignment validation
-
-**SEAL/WATERMARK Regions**:
-- Template matching
-- Color consistency
-- Edge sharpness
-- Presence validation
-
-**MRZ Regions**:
-- OCR + checksum validation
-- Format compliance
-- Character spacing analysis
-
-**LOGO/BARCODE Regions**:
-- Template matching
-- Format validation
-- Quality assessment
-
-**BACKGROUND Regions**:
-- Texture consistency
-- Color uniformity
-- Noise pattern analysis
-
-### Region Boundary Analysis
-
-Beyond individual regions, analyze boundaries:
-- **Compression consistency** across boundary
-- **Color continuity** at edges
-- **Resolution matching** between regions
-- **Lighting coherence** across divisions
-
-## Decision Logic
-
-```
-for region in regions:
-    analyzer = select_analyzer(region.type)
-    result = analyzer.analyze(region)
-    
-    if result.is_suspicious:
-        suspicious_regions.add(region)
-
-# Aggregate
-suspicion_ratio = len(suspicious_regions) / len(regions)
-boundary_issues = analyze_boundaries(regions)
-
-if suspicion_ratio > threshold or boundary_issues > threshold:
-    verdict = LIKELY_FAKE
-```
-
-
-
-## Limitations
-
-- **API Dependency**: Requires Gemini for segmentation
-- **Two-Stage Latency**: Segmentation + analysis takes time
-- **Cost**: Gemini API charges for segmentation
-- **Complexity**: More complex pipeline than whole-document analysis
-
-## Use Cases
-
-
-
-
-
-## Fallback Mechanisms
-
-**If Gemini Segmentation Fails**:
-1. Attempt OpenCV-based segmentation
-2. Fall back to whole-document analysis
-3. Use default region assumptions for document type
-
-## Integration Points
-
-Can be combined with:
-- **Gemini semantic checks**: Use Gemini for both segmentation AND semantic validation
-- **Frequency detectors**: Apply GAN/Diffusion per region
-- **Embedding methods**: Compute embeddings per region, check consistency
-- **Traditional CV**: Apply ELA, noise analysis per region
-
-## Implementation Considerations
-
-### Region Size Thresholds
-- Skip regions too small for meaningful analysis (< 50x50 pixels)
-- Merge adjacent similar regions
-- Prioritize larger, more significant regions
-
-### Analyzer Weighting
-- Weight regions by importance (PHOTO > BACKGROUND)
-- Weight by confidence in segmentation
-- Consider region size in aggregation
-
-### Visualization
-- Display color-coded regions
-- Show analyzer results per region
-- Highlight suspicious boundaries
-- Overlay confidence scores
+By treating a passport not as a single image but as a collection of distinct components, this method allows us to use the right tool for the right job, reducing false positives caused by applying photo-analysis techniques to text regions or vice versa.
